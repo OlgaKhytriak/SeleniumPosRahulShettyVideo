@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite parallel="tests" name="ErrorHandling Test Suite">
+
+    <groups>
+        <run>
+            <include name="ErrorHandling"/>
+
+        </run>
+    </groups>
+
+    <test thread-count="5" name="Error Validation">
+        <classes>
+            <class name="olhajavacourses.tests.ErrorValidations">            </class>
+        </classes>
+    </test>
+
+    <test thread-count="5" name="Submit error Tests">
+        <classes>
+            <class name="olhajavacourses.tests.StandAloneTest">            </class>
+        </classes>
+    </test>
+</suite>

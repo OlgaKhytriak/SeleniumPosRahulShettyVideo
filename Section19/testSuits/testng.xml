@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite parallel="tests" name="All Test Suite">
+    <test thread-count="5" name="Error Validation">
+        <classes>
+            <class name="olhajavacourses.tests.ErrorValidations">
+                <methods>
+                    <include name="loginErrorValidation"/>
+                    <include name="ProductErrorvalidation"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test thread-count="5" name="Submit error Tests">
+        <classes>
+            <class name="olhajavacourses.tests.StandAloneTest">
+                <methods>
+                    <include name="submitOrder"/>
+                    <include name="OrderhistoryTest"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
