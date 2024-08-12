@@ -1,16 +1,26 @@
 package olhajavacourses.testComponents;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import olhajavacourses.pageobjects.LandingPage;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 public class BaseTest {
@@ -35,15 +45,43 @@ public class BaseTest {
         return driver;
     }
 
-    @BeforeMethod (alwaysRun = true)
+    public List<HashMap<String, String>> getJasonDataToMap(String path) throws IOException {
+        String jsonContent = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8);
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<HashMap<String, String>> data = mapper.readValue(jsonContent, new TypeReference<List<HashMap<String, String>>>() {
+        });
+        return data;
+    }
+
+    public String getScreenshot(String testCasename) throws IOException {
+        TakesScreenshot ts = (TakesScreenshot)driver;
+        File source = ts.getScreenshotAs(OutputType.FILE);
+        String filePath = "/reports/"+testCasename+".png";
+        File file = new File(filePath);
+        FileUtils.copyFile(source,file);
+        return filePath;
+    }
+
+    @DataProvider
+    public Object[][] getData() throws IOException {
+        String path = "src/test/java/olhajavacourses/data/PurchaseOrder.json";
+        List<HashMap<String, String>> data = getJasonDataToMap(path);
+
+        return new Object[][]{{data.get(0)}, {data.get(1)}};
+    }
+
+
+    @BeforeMethod(alwaysRun = true)
     public LandingPage launchApplication() throws IOException {
         driver = initializeDriver();
         landingPage = new LandingPage(driver);
         landingPage.goTo();
         return landingPage;
     }
+
     @AfterMethod(alwaysRun = true)
-    public void tearDown(){
+    public void tearDown() {
         try {
             // Зупинка потоку на 100 мілісекунд
             Thread.sleep(100);
